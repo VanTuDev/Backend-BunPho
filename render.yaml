@@ -2,7 +2,7 @@
 # manually with the build/start commands below.
 services:
   - type: web
-    name: bunpho-api
+    name: backend-bunpho
     runtime: node
     plan: free
     region: frankfurt
@@ -16,7 +16,7 @@ services:
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
-        generateValue: true
+        sync: false
       - key: OWNER_EMAIL
         sync: false
       - key: OWNER_PASSWORD
