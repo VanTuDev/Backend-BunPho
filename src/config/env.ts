@@ -47,8 +47,10 @@ export const isProd = env.NODE_ENV === "production";
 /** Origins allowed by CORS: the Vercel site, any *.vercel.app preview, localhost. */
 export const allowedOrigins: (string | RegExp)[] = [
   env.FRONTEND_URL,
+  "https://pho-imperial.vercel.app",
   /^https?:\/\/localhost(:\d+)?$/,
-  /\.vercel\.app$/,
+  // Vercel preview + production deploys for this project.
+  /^https:\/\/[a-z0-9-]+\.vercel\.app$/,
   ...(env.CORS_ORIGIN?.split(",").map((s) => s.trim()).filter(Boolean) ?? []),
 ];
 
@@ -56,7 +58,8 @@ export const features = {
   cloudinary: Boolean(
     env.CLOUDINARY_CLOUD_NAME && env.CLOUDINARY_API_KEY && env.CLOUDINARY_API_SECRET,
   ),
-  telegram: Boolean(env.TELEGRAM_BOT_TOKEN && env.TELEGRAM_CHAT_ID),
+  // Chat id is optional — captured at runtime when the owner sends /start.
+  telegram: Boolean(env.TELEGRAM_BOT_TOKEN),
   google: Boolean(env.GOOGLE_CLIENT_ID),
   ownerSeed: Boolean(env.OWNER_EMAIL && env.OWNER_PASSWORD && env.OWNER_NAME),
 };

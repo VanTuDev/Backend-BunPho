@@ -30,6 +30,7 @@ async function main() {
   const { seedDatabase } = await import("./seed");
   const { ensureOwner } = await import("./lib/bootstrap");
   const { createApp } = await import("./index");
+  const { startTelegramPolling, stopTelegramPolling } = await import("./lib/telegram");
 
   await connectDb();
   await ensureOwner();
@@ -37,6 +38,7 @@ async function main() {
   console.log("[dev:local] seeded");
 
   const app = createApp();
+  startTelegramPolling();
   const server = app.listen(4000, () => {
     console.log("");
     console.log("  ┌─────────────────────────────────────────────┐");
@@ -47,6 +49,7 @@ async function main() {
   });
 
   const stop = async () => {
+    stopTelegramPolling();
     server.close();
     await disconnectDb();
     await mongo.stop();

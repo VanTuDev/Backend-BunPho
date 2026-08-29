@@ -8,6 +8,7 @@ import { ensureOwner } from "./lib/bootstrap";
 import { corsMiddleware } from "./middleware/cors";
 import { errorHandler, notFound } from "./middleware/error";
 import { authLimiter } from "./middleware/rateLimit";
+import { startTelegramPolling, stopTelegramPolling } from "./lib/telegram";
 
 import authRoutes from "./routes/auth.routes";
 import adminsRoutes from "./routes/admins.routes";
@@ -59,8 +60,11 @@ export async function start() {
       console.log(`[server] listening on :${env.PORT} (${env.NODE_ENV})`);
     });
 
+    startTelegramPolling();
+
     const shutdown = async (signal: string) => {
       console.log(`[server] ${signal} received — shutting down`);
+      stopTelegramPolling();
       server.close();
       await disconnectDb();
       process.exit(0);

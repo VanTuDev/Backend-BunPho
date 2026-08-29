@@ -44,6 +44,15 @@ const orderSchema = new Schema(
     total: { type: Number, required: true, min: 0 },
     status: { type: String, enum: ORDER_STATUSES, default: "pending", index: true },
     source: { type: String, enum: ["qr", "web"], default: "qr" },
+    // The kitchen notification message, so status changes (from the admin panel
+    // or from Telegram itself) can edit it in place.
+    telegram: {
+      type: new Schema(
+        { chatId: { type: String }, messageId: { type: Number } },
+        { _id: false },
+      ),
+      default: null,
+    },
     statusHistory: {
       type: [
         new Schema(

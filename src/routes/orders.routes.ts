@@ -9,7 +9,7 @@ import { asyncHandler, HttpError } from "../middleware/error";
 import { requireAuth } from "../middleware/auth";
 import { parseBody } from "../middleware/validate";
 import { orderLimiter } from "../middleware/rateLimit";
-import { sendOrderNotification } from "../lib/telegram";
+import { notifyStatusChange, sendOrderNotification } from "../lib/telegram";
 import { toLocalized, type Localized } from "../models/shared";
 
 const router = Router();
@@ -96,22 +96,7 @@ router.post(
 
     // Fire-and-forget + self-catching — a slow/broken Telegram must not delay
     // or fail the customer's order.
-    void sendOrderNotification({
-      _id: order._id,
-      orderNumber,
-      table: { label: table.label, type: table.type },
-      customer: { name: data.customer?.name, phone: data.customer?.phone },
-      items: items.map((i) => ({
-        name: i.name,
-        variantName: i.variantName,
-        quantity: i.quantity,
-        unitPrice: i.unitPrice,
-        lineTotal: i.lineTotal,
-        note: i.note,
-      })),
-      note: data.note,
-      total,
-    });
+    void sendOrderNotification(order);
 
     res.status(201).json({ order });
   }),
@@ -192,6 +177,7 @@ router.patch(
       order.status = status;
       order.statusHistory.push({ status, at: new Date() });
       await order.save();
+      void notifyStatusChange(order); // keep the Telegram message in sync
     }
     res.json({ order });
   }),
