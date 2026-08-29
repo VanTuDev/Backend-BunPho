@@ -6,7 +6,6 @@ export interface AdminAttrs {
   email: string;
   name: string;
   passwordHash: string | null;
-  googleId: string | null;
   role: "owner" | "admin";
   active: boolean;
   createdBy: Types.ObjectId | null;
@@ -29,7 +28,6 @@ const adminSchema = new Schema<AdminAttrs, AdminModel, AdminMethods>(
     email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
     name: { type: String, required: true, trim: true },
     passwordHash: { type: String, default: null },
-    googleId: { type: String, default: null },
     role: { type: String, enum: ["owner", "admin"], default: "admin" },
     active: { type: Boolean, default: true },
     createdBy: { type: Schema.Types.ObjectId, ref: "Admin", default: null },
@@ -49,7 +47,8 @@ adminSchema.methods.comparePassword = async function comparePassword(
   return bcrypt.compare(plain, this.passwordHash);
 };
 
-adminSchema.set("toJSON", jsonTransform("passwordHash"));
+// `googleId` is dropped from the schema — strip it from any pre-existing docs too.
+adminSchema.set("toJSON", jsonTransform("passwordHash", "googleId"));
 
 const Admin = model<AdminAttrs, AdminModel>("Admin", adminSchema);
 

@@ -66,14 +66,13 @@ Everything else degrades gracefully and is reported by `GET /health` → `featur
 |---|---|
 | Core | `MONGODB_URI`, `JWT_SECRET`, `PORT`, `NODE_ENV` |
 | Owner seed | `OWNER_EMAIL`, `OWNER_PASSWORD`, `OWNER_NAME` |
-| Google login | `GOOGLE_CLIENT_ID` |
 | Cloudinary | `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, `CLOUDINARY_API_SECRET` |
 | Telegram | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` |
 | Frontend/CORS | `FRONTEND_URL`, `CORS_ORIGIN` |
 
 The owner account is (re)created on every boot from `OWNER_*`. Additional admins are
-invited from the admin panel; Google login only works for an email that already
-belongs to an active admin.
+invited from the admin panel with an email + password. There is no Google / OAuth
+login — admins sign in with email + password only.
 
 ## API
 
@@ -93,7 +92,6 @@ Admin (`Authorization: Bearer <jwt>`):
 | Method | Path | |
 |---|---|---|
 | POST | `/api/auth/login` | `{ email, password }` |
-| POST | `/api/auth/google` | `{ credential }` (Google ID token) |
 | GET | `/api/auth/me` | current admin |
 | GET/POST | `/api/admins` · PATCH/DELETE `/api/admins/:id` | owner only |
 | POST | `/api/uploads` | multipart `file` → `{ image: { url, publicId } }` |

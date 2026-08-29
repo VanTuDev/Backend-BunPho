@@ -7,7 +7,6 @@ import { connectDb, disconnectDb } from "./db";
 import { ensureOwner } from "./lib/bootstrap";
 import { corsMiddleware } from "./middleware/cors";
 import { errorHandler, notFound } from "./middleware/error";
-import { authLimiter } from "./middleware/rateLimit";
 import { startTelegramPolling, stopTelegramPolling } from "./lib/telegram";
 
 import authRoutes from "./routes/auth.routes";
@@ -34,7 +33,7 @@ export function createApp(): Express {
     res.json({ ok: true, env: env.NODE_ENV, features, time: new Date().toISOString() });
   });
 
-  app.use("/api/auth", authLimiter, authRoutes);
+  app.use("/api/auth", authRoutes);
   app.use("/api/admins", adminsRoutes);
   app.use("/api/categories", categoriesRoutes);
   app.use("/api/menu", menuRoutes);

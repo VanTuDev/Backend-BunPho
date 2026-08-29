@@ -2,7 +2,7 @@ import rateLimit from "express-rate-limit";
 
 const json = { error: "Too many requests — please slow down and try again shortly." };
 
-/** Brute-force guard for the login / Google endpoints. */
+/** Brute-force guard for the login endpoint. */
 export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 min
   limit: 20,

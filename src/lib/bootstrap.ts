@@ -7,6 +7,9 @@ import { env, features } from "../config/env";
  * match the current env — handy when the owner forgets it on a live deploy.
  */
 export async function ensureOwner(): Promise<void> {
+  // One-time cleanup: drop the legacy `googleId` field (Google login removed).
+  await Admin.collection.updateMany({ googleId: { $exists: true } }, { $unset: { googleId: "" } });
+
   if (!features.ownerSeed) {
     const count = await Admin.countDocuments();
     if (count === 0) {

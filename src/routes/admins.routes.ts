@@ -20,7 +20,8 @@ router.get(
 const createSchema = z.object({
   email: z.string().email(),
   name: z.string().min(1).max(120),
-  password: z.string().min(6).max(200).optional(),
+  // Password is now the only way in, so it is required when creating an admin.
+  password: z.string().min(6).max(200),
 });
 
 router.post(
@@ -36,7 +37,7 @@ router.post(
       role: "admin",
       createdBy: req.admin!.id,
     });
-    if (password) await admin.setPassword(password);
+    await admin.setPassword(password);
     await admin.save();
 
     res.status(201).json({ admin });

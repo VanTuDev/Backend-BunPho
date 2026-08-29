@@ -17,8 +17,6 @@ const schema = z.object({
   OWNER_PASSWORD: z.string().min(6).optional(),
   OWNER_NAME: z.string().min(1).optional(),
 
-  GOOGLE_CLIENT_ID: z.string().optional(),
-
   CLOUDINARY_CLOUD_NAME: z.string().optional(),
   CLOUDINARY_API_KEY: z.string().optional(),
   CLOUDINARY_API_SECRET: z.string().optional(),
@@ -60,6 +58,5 @@ export const features = {
   ),
   // Chat id is optional — captured at runtime when the owner sends /start.
   telegram: Boolean(env.TELEGRAM_BOT_TOKEN),
-  google: Boolean(env.GOOGLE_CLIENT_ID),
   ownerSeed: Boolean(env.OWNER_EMAIL && env.OWNER_PASSWORD && env.OWNER_NAME),
 };
